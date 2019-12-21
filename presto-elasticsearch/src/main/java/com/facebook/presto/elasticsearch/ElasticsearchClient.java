@@ -97,10 +97,18 @@ public class ElasticsearchClient
             LOG.info("tableDescription: [" + tableDescription.toString() + "]");
 
             if (!clients.containsKey(tableDescription.getClusterName())) {
-                LOG.info("host: [" + tableDescription.getHost() + "], port: [" + tableDescription.getPort() + "] added to map...");
+                LOG.info("hosts: [" + tableDescription.getHost() + "], port: [" + tableDescription.getPort() + "] added ...");
 
-                TransportAddress address = new TransportAddress(InetAddress.getByName(tableDescription.getHost()), tableDescription.getPort());
-                TransportClient client = createTransportClient(config, address, Optional.of(tableDescription.getClusterName()));
+                String hosts = tableDescription.getHost();
+                String[] tokens = hosts.split(",");
+                List<TransportAddress> addresses = new ArrayList<>();
+                for(String host : tokens)
+                {
+                    TransportAddress address = new TransportAddress(InetAddress.getByName(host), tableDescription.getPort());
+                    addresses.add(address);
+                }
+
+                TransportClient client = createTransportClient(config, addresses, Optional.of(tableDescription.getClusterName()));
                 clients.put(tableDescription.getClusterName(), client);
             }
         }
@@ -458,7 +466,7 @@ public class ElasticsearchClient
         return createTransportClient(config, address, Optional.empty());
     }
 
-    static TransportClient createTransportClient(ElasticsearchConnectorConfig config, TransportAddress address, Optional<String> clusterName)
+    static TransportClient createTransportClient(ElasticsearchConnectorConfig config, List<TransportAddress> addresses, Optional<String> clusterName)
     {
         Settings settings;
         Builder builder;
@@ -472,7 +480,7 @@ public class ElasticsearchClient
         }
 
         if (clusterName.isPresent()) {
-            LOG.info("clusterName: [" + clusterName + "]");
+            LOG.info("clusterName: [" + clusterName.get() + "]");
 
             builder = Settings.builder()
                     .put("client.transport.sniff", true)
@@ -483,6 +491,8 @@ public class ElasticsearchClient
                     .put("client.transport.ignore_cluster_name", true);
         }
 
+        LOG.info("config.getCertificateFormat(): [" + config.getCertificateFormat() + "]");
+
         switch (config.getCertificateFormat()) {
             case PEM:
                 settings = builder
@@ -492,7 +502,8 @@ public class ElasticsearchClient
                         .put(SEARCHGUARD_SSL_TRANSPORT_PEMTRUSTEDCAS_FILEPATH, config.getPemtrustedcasFilepath())
                         .put(SEARCHGUARD_SSL_TRANSPORT_ENFORCE_HOSTNAME_VERIFICATION, false)
                         .build();
-                client = new PreBuiltTransportClient(settings, SearchGuardSSLPlugin.class).addTransportAddress(address);
+                client = new PreBuiltTransportClient(settings, SearchGuardSSLPlugin.class);
+                addAddresses(client, addresses);
                 break;
             case JKS:
                 settings = Settings.builder()
@@ -502,13 +513,23 @@ public class ElasticsearchClient
                         .put(SEARCHGUARD_SSL_TRANSPORT_TRUSTSTORE_PASSWORD, config.getTruststorePassword())
                         .put(SEARCHGUARD_SSL_TRANSPORT_ENFORCE_HOSTNAME_VERIFICATION, false)
                         .build();
-                client = new PreBuiltTransportClient(settings, SearchGuardSSLPlugin.class).addTransportAddress(address);
+                client = new PreBuiltTransportClient(settings, SearchGuardSSLPlugin.class);
+                addAddresses(client, addresses);
                 break;
             default:
                 settings = builder.build();
-                client = new PreBuiltTransportClient(settings).addTransportAddress(address);
+                client = new PreBuiltTransportClient(settings);
+                addAddresses(client, addresses);
                 break;
         }
         return client;
+    }
+
+    private static void addAddresses(TransportClient client, List<TransportAddress> addresses)
+    {
+        for(TransportAddress address : addresses)
+        {
+            client.addTransportAddress(address);
+        }
     }
 }
