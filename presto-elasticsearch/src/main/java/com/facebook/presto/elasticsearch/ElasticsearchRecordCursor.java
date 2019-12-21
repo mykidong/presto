@@ -219,7 +219,7 @@ public class ElasticsearchRecordCursor
     {
         SearchResponse response = getSearchResponse(queryBuilder);
 
-        if (response.getHits().getTotalHits() > maxHits) {
+        if (response.getHits().getTotalHits().value > maxHits) {
             throw new PrestoException(ELASTICSEARCH_MAX_HITS_EXCEEDED,
                     format("The number of hits for the query (%d) exceeds the configured max hits (%d)", response.getHits().getTotalHits(), maxHits));
         }
