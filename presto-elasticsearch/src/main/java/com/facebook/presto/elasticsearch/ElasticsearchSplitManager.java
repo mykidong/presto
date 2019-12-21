@@ -32,11 +32,7 @@ import static java.util.Objects.requireNonNull;
 public class ElasticsearchSplitManager
         implements ConnectorSplitManager
 {
-<<<<<<< HEAD
     private static final Logger LOG = Logger.get(ElasticsearchSplitManager.class);
-=======
-    private static final Logger LOG = Logger.get(ElasticsearchClient.class);
->>>>>>> 0a21fdb2775a4963c72357466ac804dc3fee6e61
 
     private final ElasticsearchClient client;
 
