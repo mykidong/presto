@@ -225,6 +225,8 @@ public class ElasticsearchClient
                             .getIndices());
         }
         catch (Exception e) {
+            e.printStackTrace();
+
             throw new RuntimeException(e);
         }
     }
