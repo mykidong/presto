@@ -111,6 +111,8 @@ public class ElasticsearchClient
         maxRetryTime = configuration.getMaxRetryTime();
 
         for (ElasticsearchTableDescription tableDescription : tableDescriptions.getAllTableDescriptions()) {
+            LOG.info("tableDescription: {}", tableDescription.toString());
+
             if (!clients.containsKey(tableDescription.getClusterName())) {
                 TransportAddress address = new TransportAddress(InetAddress.getByName(tableDescription.getHost()), tableDescription.getPort());
                 TransportClient client = createTransportClient(config, address, Optional.of(tableDescription.getClusterName()));
@@ -476,12 +478,14 @@ public class ElasticsearchClient
         TransportClient client;
         if (clusterName.isPresent()) {
             builder = Settings.builder()
+                    .put("client.transport.sniff", true)
                     .put("cluster.name", clusterName.get());
         }
         else {
             builder = Settings.builder()
                     .put("client.transport.ignore_cluster_name", true);
         }
+
         switch (config.getCertificateFormat()) {
             case PEM:
                 settings = builder
