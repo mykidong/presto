@@ -77,10 +77,20 @@ public class ElasticsearchQueryBuilder
         requireNonNull(split, "split is null");
 
         columns = columnHandles;
+        LOG.info("columns: [" + columns + "]");
+
         tupleDomain = split.getTupleDomain();
+        LOG.info("tupleDomain: [" + tupleDomain + "]");
+
         index = split.getIndex();
+        LOG.info("index: [" + index + "]");
+
         shard = split.getShard();
+        LOG.info("shard: [" + shard + "]");
+
         type = split.getType();
+        LOG.info("type: [" + type + "]");
+
         InetAddress address;
         try {
             address = InetAddress.getByName(split.getSearchNode());
@@ -89,8 +99,13 @@ public class ElasticsearchQueryBuilder
             throw new PrestoException(ELASTICSEARCH_CONNECTION_ERROR, format("Error connecting to search node (%s:%d)", split.getSearchNode(), split.getPort()), e);
         }
         client = createTransportClient(config, new TransportAddress(address, split.getPort()));
+        LOG.info("client: [" + client.toString() + "]");
+
         scrollTimeout = config.getScrollTimeout();
+        LOG.info("scrollTimeout: [" + scrollTimeout + "]");
+
         scrollSize = config.getScrollSize();
+        LOG.info("scrollSize: [" + scrollSize + "]");
     }
 
     public void close()
@@ -112,7 +127,7 @@ public class ElasticsearchQueryBuilder
                 .setQuery(buildSearchQuery())
                 .setPreference("_shards:" + shard)
                 .setSize(scrollSize);
-        LOG.debug("Elasticsearch Request: %s", searchRequestBuilder);
+        LOG.info("Elasticsearch Request: %s", searchRequestBuilder);
         return searchRequestBuilder;
     }
 
