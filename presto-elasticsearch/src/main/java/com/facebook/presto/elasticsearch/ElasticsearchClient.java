@@ -111,9 +111,11 @@ public class ElasticsearchClient
         maxRetryTime = configuration.getMaxRetryTime();
 
         for (ElasticsearchTableDescription tableDescription : tableDescriptions.getAllTableDescriptions()) {
-            LOG.info("tableDescription: {}", tableDescription.toString());
+            LOG.info("tableDescription: [" + tableDescription.toString() + "]");
 
             if (!clients.containsKey(tableDescription.getClusterName())) {
+                LOG.info("host: [" + tableDescription.getHost() + "], port: [" + tableDescription.getPort() + "] added .,,");
+
                 TransportAddress address = new TransportAddress(InetAddress.getByName(tableDescription.getHost()), tableDescription.getPort());
                 TransportClient client = createTransportClient(config, address, Optional.of(tableDescription.getClusterName()));
                 clients.put(tableDescription.getClusterName(), client);
@@ -476,7 +478,18 @@ public class ElasticsearchClient
         Settings settings;
         Builder builder;
         TransportClient client;
+
+        try {
+            LOG.info("config: " + new ObjectMapper().writeValueAsString(config));
+            LOG.info("clusterName: " + clusterName);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         if (clusterName.isPresent()) {
+            LOG.info("clusterName: " + clusterName);
+            
             builder = Settings.builder()
                     .put("client.transport.sniff", true)
                     .put("cluster.name", clusterName.get());
