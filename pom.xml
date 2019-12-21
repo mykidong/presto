@@ -1358,12 +1358,14 @@
         </pluginManagement>
 
         <plugins>
+            <!--
             <plugin>
                 <groupId>com.facebook.presto</groupId>
                 <artifactId>presto-maven-plugin</artifactId>
                 <version>0.3</version>
                 <extensions>true</extensions>
             </plugin>
+            -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -1409,13 +1411,6 @@
                             <Implementation-Version>${project.version}-${git.commit.id.abbrev}</Implementation-Version>
                         </manifestEntries>
                     </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
