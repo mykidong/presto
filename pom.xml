@@ -1319,21 +1319,21 @@
                     </configuration>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <configuration>
-                        <rules>
-                            <requireUpperBoundDeps>
-                                <excludes combine.children="append">
-                                    <!-- TODO: fix this in Airlift resolver -->
-                                    <exclude>org.codehaus.plexus:plexus-utils</exclude>
-                                    <exclude>com.google.guava:guava</exclude>
-                                </excludes>
-                            </requireUpperBoundDeps>
-                        </rules>
-                    </configuration>
-                </plugin>
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-enforcer-plugin</artifactId>-->
+<!--                    <configuration>-->
+<!--                        <rules>-->
+<!--                            <requireUpperBoundDeps>-->
+<!--                                <excludes combine.children="append">-->
+<!--                                    &lt;!&ndash; TODO: fix this in Airlift resolver &ndash;&gt;-->
+<!--                                    <exclude>org.codehaus.plexus:plexus-utils</exclude>-->
+<!--                                    <exclude>com.google.guava:guava</exclude>-->
+<!--                                </excludes>-->
+<!--                            </requireUpperBoundDeps>-->
+<!--                        </rules>-->
+<!--                    </configuration>-->
+<!--                </plugin>-->
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
