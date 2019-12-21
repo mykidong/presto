@@ -495,37 +495,42 @@ public class ElasticsearchClient
                     .put("client.transport.ignore_cluster_name", true);
         }
 
-        LOG.info("config.getCertificateFormat(): [" + config.getCertificateFormat() + "]");
+//        LOG.info("config.getCertificateFormat(): [" + config.getCertificateFormat() + "]");
+//
+//        switch (config.getCertificateFormat()) {
+//            case PEM:
+//                settings = builder
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_PEMCERT_FILEPATH, config.getPemcertFilepath())
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_PEMKEY_FILEPATH, config.getPemkeyFilepath())
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_PEMKEY_PASSWORD, config.getPemkeyPassword())
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_PEMTRUSTEDCAS_FILEPATH, config.getPemtrustedcasFilepath())
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_ENFORCE_HOSTNAME_VERIFICATION, false)
+//                        .build();
+//                client = new PreBuiltTransportClient(settings, SearchGuardSSLPlugin.class);
+//                addAddresses(client, addresses);
+//                break;
+//            case JKS:
+//                settings = Settings.builder()
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_KEYSTORE_FILEPATH, config.getKeystoreFilepath())
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_TRUSTSTORE_FILEPATH, config.getTruststoreFilepath())
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_KEYSTORE_PASSWORD, config.getKeystorePassword())
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_TRUSTSTORE_PASSWORD, config.getTruststorePassword())
+//                        .put(SEARCHGUARD_SSL_TRANSPORT_ENFORCE_HOSTNAME_VERIFICATION, false)
+//                        .build();
+//                client = new PreBuiltTransportClient(settings, SearchGuardSSLPlugin.class);
+//                addAddresses(client, addresses);
+//                break;
+//            default:
+//                settings = builder.build();
+//                client = new PreBuiltTransportClient(settings);
+//                addAddresses(client, addresses);
+//                break;
+//        }
 
-        switch (config.getCertificateFormat()) {
-            case PEM:
-                settings = builder
-                        .put(SEARCHGUARD_SSL_TRANSPORT_PEMCERT_FILEPATH, config.getPemcertFilepath())
-                        .put(SEARCHGUARD_SSL_TRANSPORT_PEMKEY_FILEPATH, config.getPemkeyFilepath())
-                        .put(SEARCHGUARD_SSL_TRANSPORT_PEMKEY_PASSWORD, config.getPemkeyPassword())
-                        .put(SEARCHGUARD_SSL_TRANSPORT_PEMTRUSTEDCAS_FILEPATH, config.getPemtrustedcasFilepath())
-                        .put(SEARCHGUARD_SSL_TRANSPORT_ENFORCE_HOSTNAME_VERIFICATION, false)
-                        .build();
-                client = new PreBuiltTransportClient(settings, SearchGuardSSLPlugin.class);
-                addAddresses(client, addresses);
-                break;
-            case JKS:
-                settings = Settings.builder()
-                        .put(SEARCHGUARD_SSL_TRANSPORT_KEYSTORE_FILEPATH, config.getKeystoreFilepath())
-                        .put(SEARCHGUARD_SSL_TRANSPORT_TRUSTSTORE_FILEPATH, config.getTruststoreFilepath())
-                        .put(SEARCHGUARD_SSL_TRANSPORT_KEYSTORE_PASSWORD, config.getKeystorePassword())
-                        .put(SEARCHGUARD_SSL_TRANSPORT_TRUSTSTORE_PASSWORD, config.getTruststorePassword())
-                        .put(SEARCHGUARD_SSL_TRANSPORT_ENFORCE_HOSTNAME_VERIFICATION, false)
-                        .build();
-                client = new PreBuiltTransportClient(settings, SearchGuardSSLPlugin.class);
-                addAddresses(client, addresses);
-                break;
-            default:
-                settings = builder.build();
-                client = new PreBuiltTransportClient(settings);
-                addAddresses(client, addresses);
-                break;
-        }
+        settings = builder.build();
+        client = new PreBuiltTransportClient(settings);
+        addAddresses(client, addresses);
+
         return client;
     }
 
