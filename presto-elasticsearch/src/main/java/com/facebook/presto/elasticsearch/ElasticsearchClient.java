@@ -463,7 +463,7 @@ public class ElasticsearchClient
     }
     static TransportClient createTransportClient(ElasticsearchConnectorConfig config, TransportAddress address)
     {
-        return createTransportClient(config, address, Optional.empty());
+        return createTransportClient(config, Arrays.asList(address), Optional.empty());
     }
 
     static TransportClient createTransportClient(ElasticsearchConnectorConfig config, List<TransportAddress> addresses, Optional<String> clusterName)
