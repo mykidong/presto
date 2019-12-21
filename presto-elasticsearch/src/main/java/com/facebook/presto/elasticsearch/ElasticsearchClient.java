@@ -84,6 +84,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.airlift.concurrent.Threads.daemonThreadsNamed;
 import static java.util.Map.Entry;
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.Executors.callable;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
@@ -114,6 +115,7 @@ public class ElasticsearchClient
             LOG.info("tableDescription: [" + tableDescription.toString() + "]");
 
             if (!clients.containsKey(tableDescription.getClusterName())) {
+                LOG.info("host: [" + tableDescription.getHost() + "], port: [" + tableDescription.getPort() + "] added to map...");
                 TransportAddress address = new TransportAddress(InetAddress.getByName(tableDescription.getHost()), tableDescription.getPort());
                 TransportClient client = createTransportClient(config, address, Optional.of(tableDescription.getClusterName()));
                 clients.put(tableDescription.getClusterName(), client);
@@ -210,6 +212,8 @@ public class ElasticsearchClient
 
     public ClusterSearchShardsResponse getSearchShards(String index, ElasticsearchTableDescription tableDescription)
     {
+        LOG.info("cluserName: [" + tableDescription.getClusterName() + "]");
+
         TransportClient client = clients.get(tableDescription.getClusterName());
         verify(client != null, "client is null");
         return getSearchShardsResponse(client, new ClusterSearchShardsRequest(index));
@@ -476,7 +480,16 @@ public class ElasticsearchClient
         Settings settings;
         Builder builder;
         TransportClient client;
+
+        try {
+            LOG.info("config: [" + new ObjectMapper().writeValueAsString(config) + "]");
+            LOG.info("clusterName: [" + clusterName.get() + "]");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
         if (clusterName.isPresent()) {
+            LOG.info("clusterName: [" + clusterName + "]");
             builder = Settings.builder()
                     .put("client.transport.sniff", true)
                     .put("cluster.name", clusterName.get());

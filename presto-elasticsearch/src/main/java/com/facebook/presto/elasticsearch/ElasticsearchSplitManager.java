@@ -20,7 +20,10 @@ import com.facebook.presto.spi.ConnectorTableLayoutHandle;
 import com.facebook.presto.spi.FixedSplitSource;
 import com.facebook.presto.spi.connector.ConnectorSplitManager;
 import com.facebook.presto.spi.connector.ConnectorTransactionHandle;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
+import com.google.inject.internal.cglib.reflect.$FastConstructor;
+import io.airlift.log.Logger;
 import org.elasticsearch.action.admin.cluster.shards.ClusterSearchShardsGroup;
 import org.elasticsearch.action.admin.cluster.shards.ClusterSearchShardsResponse;
 import org.elasticsearch.cluster.node.DiscoveryNode;
@@ -35,6 +38,8 @@ import static java.util.Objects.requireNonNull;
 public class ElasticsearchSplitManager
         implements ConnectorSplitManager
 {
+    private static final Logger LOG = Logger.get(ElasticsearchClient.class);
+
     private final ElasticsearchClient client;
 
     @Inject
@@ -56,6 +61,13 @@ public class ElasticsearchSplitManager
         verify(table != null, "Table no longer exists: %s", tableHandle.toString());
 
         List<String> indices = client.getIndices(table);
+        try {
+            LOG.info("indices: [" + new ObjectMapper().writeValueAsString(indices) + "]");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         ImmutableList.Builder<ConnectorSplit> splits = ImmutableList.builder();
         for (String index : indices) {
             ClusterSearchShardsResponse response = client.getSearchShards(index, table);
