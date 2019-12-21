@@ -13,11 +13,7 @@
  */
 package com.facebook.presto.elasticsearch;
 
-import com.facebook.presto.spi.ConnectorSession;
-import com.facebook.presto.spi.ConnectorSplit;
-import com.facebook.presto.spi.ConnectorSplitSource;
-import com.facebook.presto.spi.ConnectorTableLayoutHandle;
-import com.facebook.presto.spi.FixedSplitSource;
+import com.facebook.presto.spi.*;
 import com.facebook.presto.spi.connector.ConnectorSplitManager;
 import com.facebook.presto.spi.connector.ConnectorTransactionHandle;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +24,6 @@ import org.elasticsearch.action.admin.cluster.shards.ClusterSearchShardsResponse
 import org.elasticsearch.cluster.node.DiscoveryNode;
 
 import javax.inject.Inject;
-
 import java.util.List;
 
 import static com.google.common.base.Verify.verify;
@@ -37,7 +32,11 @@ import static java.util.Objects.requireNonNull;
 public class ElasticsearchSplitManager
         implements ConnectorSplitManager
 {
+<<<<<<< HEAD
     private static final Logger LOG = Logger.get(ElasticsearchSplitManager.class);
+=======
+    private static final Logger LOG = Logger.get(ElasticsearchClient.class);
+>>>>>>> 0a21fdb2775a4963c72357466ac804dc3fee6e61
 
     private final ElasticsearchClient client;
 
@@ -61,12 +60,11 @@ public class ElasticsearchSplitManager
 
         List<String> indices = client.getIndices(table);
         try {
-            LOG.info("indices: " + new ObjectMapper().writeValueAsString(indices));
+            LOG.info("indices: [" + new ObjectMapper().writeValueAsString(indices) + "]");
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-
 
         ImmutableList.Builder<ConnectorSplit> splits = ImmutableList.builder();
         for (String index : indices) {
