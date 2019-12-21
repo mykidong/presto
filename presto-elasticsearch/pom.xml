@@ -274,6 +274,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M3</version>
+                <configuration>
+                    <skip>true</skip>
+                    <fail>false</fail>
+                </configuration>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
