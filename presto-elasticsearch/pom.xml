@@ -9,9 +9,7 @@
     <artifactId>presto-elasticsearch</artifactId>
     <description>Presto - Elasticsearch Connector</description>
     <version>0.228</version>
-    <!--
     <packaging>presto-plugin</packaging>
-    -->
 
     <properties>
         <air.main.basedir>${project.parent.basedir}</air.main.basedir>
