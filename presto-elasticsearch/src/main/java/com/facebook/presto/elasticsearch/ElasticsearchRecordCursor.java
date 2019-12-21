@@ -221,7 +221,7 @@ public class ElasticsearchRecordCursor
 
         if (response.getHits().getTotalHits().value > maxHits) {
             throw new PrestoException(ELASTICSEARCH_MAX_HITS_EXCEEDED,
-                    format("The number of hits for the query (%d) exceeds the configured max hits (%d)", response.getHits().getTotalHits(), maxHits));
+                    format("The number of hits for the query (%d) exceeds the configured max hits (%d)", response.getHits().getTotalHits().value, maxHits));
         }
 
         ImmutableList.Builder<SearchHit> result = ImmutableList.builder();
