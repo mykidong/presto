@@ -27,7 +27,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Closer;
 import io.airlift.json.ObjectMapperProvider;
-import io.airlift.log.Logger;
 import io.airlift.units.Duration;
 import org.elasticsearch.action.admin.cluster.shards.ClusterSearchShardsRequest;
 import org.elasticsearch.action.admin.cluster.shards.ClusterSearchShardsResponse;
@@ -40,6 +39,8 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -70,7 +71,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class ElasticsearchClient
 {
-    private static final Logger LOG = Logger.get(ElasticsearchClient.class);
+    private static Logger LOG = LoggerFactory.getLogger(ElasticsearchClient.class);
 
     private final ExecutorService executor = newFixedThreadPool(1, daemonThreadsNamed("elasticsearch-metadata-%s"));
     private final ObjectMapper objecMapper = new ObjectMapperProvider().get();
