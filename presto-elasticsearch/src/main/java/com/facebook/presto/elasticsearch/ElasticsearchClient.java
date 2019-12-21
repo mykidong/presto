@@ -82,6 +82,7 @@ public class ElasticsearchClient
     private final Duration requestTimeout;
     private final int maxAttempts;
     private final Duration maxRetryTime;
+    private static List<TransportAddress> addressesList;
 
     @Inject
     public ElasticsearchClient(ElasticsearchTableDescriptionProvider descriptions, ElasticsearchConnectorConfig config)
@@ -101,14 +102,15 @@ public class ElasticsearchClient
 
                 String hosts = tableDescription.getHost();
                 String[] tokens = hosts.split(",");
-                List<TransportAddress> addresses = new ArrayList<>();
+
+                addressesList = new ArrayList<>();
                 for(String host : tokens)
                 {
                     TransportAddress address = new TransportAddress(InetAddress.getByName(host), tableDescription.getPort());
-                    addresses.add(address);
+                    addressesList.add(address);
                 }
 
-                TransportClient client = createTransportClient(config, addresses, Optional.of(tableDescription.getClusterName()));
+                TransportClient client = createTransportClient(config, addressesList, Optional.of(tableDescription.getClusterName()));
                 clients.put(tableDescription.getClusterName(), client);
             }
         }
@@ -527,9 +529,18 @@ public class ElasticsearchClient
 
     private static void addAddresses(TransportClient client, List<TransportAddress> addresses)
     {
-        for(TransportAddress address : addresses)
+        if(addresses.size() == 1)
         {
-            client.addTransportAddress(address);
+            addressesList.addAll(addresses);
+
+            for (TransportAddress address : addressesList) {
+                client.addTransportAddress(address);
+            }
+        }
+        else {
+            for (TransportAddress address : addresses) {
+                client.addTransportAddress(address);
+            }
         }
     }
 }
