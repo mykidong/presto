@@ -111,7 +111,7 @@ public class ElasticsearchClient
         maxRetryTime = configuration.getMaxRetryTime();
 
         for (ElasticsearchTableDescription tableDescription : tableDescriptions.getAllTableDescriptions()) {
-            LOG.info("tableDescription: {}", tableDescription.toString());
+            LOG.info("tableDescription: [" + tableDescription.toString() + "]");
 
             if (!clients.containsKey(tableDescription.getClusterName())) {
                 TransportAddress address = new TransportAddress(InetAddress.getByName(tableDescription.getHost()), tableDescription.getPort());
